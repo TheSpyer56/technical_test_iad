@@ -25,7 +25,7 @@ class Contact
     #[ORM\Column(type: 'string', length: 255)]
     private $address;
 
-    #[ORM\Column(type: 'string', length: 15)]
+    #[ORM\Column(type: 'string', length: 25)]
     private $phone;
 
     #[ORM\Column(type: 'smallint')]
