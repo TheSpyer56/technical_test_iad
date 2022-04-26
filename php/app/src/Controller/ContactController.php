@@ -24,22 +24,42 @@ class ContactController extends AbstractController
 
     #[Route('/contact/{id}', name: 'read_contact', methods: 'GET')]
     public function read_contact($id): Response {
-        $data = $this->doctrine->getRepository(Contact::class)->find($id);
+        $data = $this->findOneContactById($id);
         if (!$data)
             return $this->json("No contact exist on the database with the id: ".$id, 404);
         $res = $this->fromDoctrineToArray($data);
         return $this->json($res, 200);
     }
     
+    #[Route('/contact/{id}', name: 'delete_contact', methods: 'DELETE')]
+    public function delete_contact($id): Response {
+        $data = $this->findOneContactById($id);
+        if (!$data)
+            return $this->json("No contact exist on the database with the id: ".$id, 404);
+        $this->deleteOnDb($data);
+        return $this->json('Deleted Successfully', 200);
+    }
+
     #[Route('/contact', name: 'read_all_contact', methods: 'GET')]
     public function read_all_contact(): Response {
-        $data = $this->doctrine->getRepository(Contact::class)->findAll();
+        $data = $this->getAllContact();
         if (!$data)
             return $this->json('Contact database is empty !', 404);
         foreach ($data as $d) {
             $res[] = $this->fromDoctrineToArray($d);
         }
         return $this->json($res, 200);
+    }
+
+
+    private function findOneContactById($id) {
+        $data = $this->doctrine->getRepository(Contact::class)->find($id);
+        return $data;
+    }
+
+    private function getAllContact() {
+        $data = $this->doctrine->getRepository(Contact::class)->findAll();
+        return $data;
     }
 
     private function insertOnDb($data) {
