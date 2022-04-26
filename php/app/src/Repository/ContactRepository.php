@@ -47,6 +47,19 @@ class ContactRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @return Contact[] Returns an array of Contact objects whose name field contains value
+     */
+
+     public function findByNameContains($value) {
+         return $this->createQueryBuilder('Contact')
+            ->where('Contact.name LIKE :val')
+            ->setParameters('val', '%'.$value.'%')
+            ->getQuery()
+            ->getResult()
+        ;
+     }
+
     // /**
     //  * @return Contact[] Returns an array of Contact objects
     //  */
