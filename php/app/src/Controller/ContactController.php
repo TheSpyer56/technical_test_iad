@@ -27,14 +27,7 @@ class ContactController extends AbstractController
         $data = $this->doctrine->getRepository(Contact::class)->find($id);
         if (!$data)
             return $this->json("No contact exist on the database with the id: ".$id, 404);
-        $res = [
-            'name' => $data->getName(),
-            'surname' => $data->getSurname(),
-            'email' => $data->getEmail(),
-            'address' => $data->getAddress(),
-            'phone' => $data->getPhone(),
-            'age' => $data->getAge()
-        ];
+        $res = $this->fromDoctrineToArray($data);
         return $this->json($res, 200);
     }
     
@@ -44,15 +37,7 @@ class ContactController extends AbstractController
         if (!$data)
             return $this->json('Contact database is empty !', 404);
         foreach ($data as $d) {
-            $res[] = [
-                'id' => $d->getId(),
-                'name' => $d->getName(),
-                'surname' => $d->getSurname(),
-                'email' => $d->getEmail(),
-                'address' => $d->getAddress(),
-                'phone' => $d->getPhone(),
-                'age' => $d->getAge()
-            ];
+            $res[] = $this->fromDoctrineToArray($d);
         }
         return $this->json($res, 200);
     }
@@ -67,5 +52,18 @@ class ContactController extends AbstractController
         $em = $this->doctrine->getManager();
         $em->remove($data);
         $em->flush();
+    }
+
+    private function fromDoctrineToArray($data): array {
+        $array = [
+            'id' => $data->getId(),
+            'name' => $data->getName(),
+            'surname' => $data->getSurname(),
+            'email' => $data->getEmail(),
+            'address' => $data->getAddress(),
+            'phone' => $data->getPhone(),
+            'age' => $data->getAge()
+        ];
+        return $array;
     }
 }
